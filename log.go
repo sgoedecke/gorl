@@ -8,9 +8,8 @@ const LogWidth = 40
 const WorldWidth = 80
 const MaxHeight = 40
 
-type Log struct {
-	Messages []Message
-}
+// Message type: an individual line in the log. Has a color. Text is stored as an array of strings
+// (each which must be 40 chars or less) to make handling word wrap easy. Can draw itself if given a y.
 
 type Message struct {
 	Text  []string // array of length 40 strings to ensure line breaks work
@@ -45,6 +44,25 @@ func (m *Message) Height() int {
 	return len(m.Text)
 }
 
+func (m *Message) Draw(y int) {
+	for _, str := range m.Text {
+		x := int(WorldWidth + 1)
+		runes := []rune(str)
+		for _, r := range runes {
+			termbox.SetCell(x, y, r, m.Color, termbox.ColorDefault)
+			x++
+		}
+		y++
+	}
+}
+
+// Log type: contains a lot of messages, knows how to add a new message to the bottom (deleting top ones
+// for space). Knows how to draw itself.
+
+type Log struct {
+	Messages []Message
+}
+
 func (l *Log) Height() int {
 	acc := 0
 	for _, msg := range l.Messages {
@@ -65,19 +83,7 @@ func (l *Log) AddMessage(s string, color termbox.Attribute) {
 func (l *Log) Draw() {
 	y := 0
 	for _, msg := range l.Messages {
-		DrawMessage(y, &msg)
+		msg.Draw(y)
 		y = y + msg.Height()
-	}
-}
-
-func DrawMessage(y int, m *Message) {
-	for _, str := range m.Text {
-		x := int(WorldWidth + 1)
-		runes := []rune(str)
-		for _, r := range runes {
-			termbox.SetCell(x, y, r, m.Color, termbox.ColorDefault)
-			x++
-		}
-		y++
 	}
 }

@@ -23,11 +23,13 @@ func main() {
 	}()
 
 	// initialize the world and do initial draw
-	w := NewWorld(80, 40)
-	p := Player{2, 2, 64, w} // 64 -> '@'
+	w := NewWorld(80, 40)         // width 80, height 40
+	p := Player{2, 2, 64, 100, w} // 64 -> '@'
+	w.Player = &p
 	l := Log{}
+	hp := HealthBar{&p}
 
-	draw(w, p, &l)
+	draw(w, &l, &hp)
 	// set up key handlers
 	for {
 		event := <-eventQueue
@@ -45,25 +47,22 @@ func main() {
 				return
 			}
 		}
-		draw(w, p, &l)
+		draw(w, &l, &hp)
 
 	}
 
 }
 
-// draw the world to the termbox back buffer & flush buffer
-func draw(w *World, p Player, l *Log) {
+// clear buffer, draw everything to the termbox back buffer & flush buffer
+// takes pointers to a world widget, a log widget, and a health bar widget
+func draw(w *World, l *Log, hp *HealthBar) {
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
 
-	// draw all tiles
-	for _, tile := range w.Tiles {
-		termbox.SetCell(tile.X, tile.Y, tile.img, tile.fg, tile.bg)
-	}
-	// draw player
-	termbox.SetCell(p.X, p.Y, p.img, termbox.ColorRed, termbox.ColorBlack)
+	w.Draw()
 
-	l.AddMessage("Hello world"+strconv.Itoa(len(l.Messages)), termbox.ColorCyan)
+	l.AddMessage("Hello worllkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhjhjhjhdQQQ"+strconv.Itoa(len(l.Messages)), termbox.ColorCyan)
 
 	l.Draw()
+	hp.Draw(41, 80) // world height + 1, world width
 	_ = termbox.Flush()
 }

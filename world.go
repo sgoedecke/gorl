@@ -4,9 +4,7 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
-type World struct {
-	Tiles []Tile
-}
+// Tile type: has coords, a rune, colors, and knows if you can step on it or not
 
 type Tile struct {
 	X        int
@@ -17,6 +15,14 @@ type Tile struct {
 	passable bool
 }
 
+// World type: has tiles. Can create itself with tiles as walls. Can check if there's an impassable tile at
+// some coordinates
+
+type World struct {
+	Tiles  []Tile
+	Player *Player
+}
+
 func (w *World) IsTileOccupied(x int, y int) bool {
 	for _, tile := range w.Tiles {
 		if tile.X == x && tile.Y == y && !tile.passable {
@@ -24,6 +30,16 @@ func (w *World) IsTileOccupied(x int, y int) bool {
 		}
 	}
 	return false
+}
+
+func (w *World) Draw() {
+	// draw all tiles
+	for _, tile := range w.Tiles {
+		termbox.SetCell(tile.X, tile.Y, tile.img, tile.fg, tile.bg)
+	}
+	// draw player
+	p := w.Player
+	termbox.SetCell(p.X, p.Y, p.img, termbox.ColorRed, termbox.ColorBlack)
 }
 
 func NewWorld(width int, height int) *World {
