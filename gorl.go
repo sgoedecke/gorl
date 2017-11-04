@@ -11,6 +11,7 @@ func main() {
 		panic(err)
 	}
 	defer termbox.Close()
+	termbox.SetOutputMode(termbox.Output256)
 
 	// initialize an event queue and poll eternally, sending events to a channel
 	eventQueue := make(chan termbox.Event)
@@ -53,7 +54,7 @@ func draw(w *World, p Player) {
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
 
 	for _, tile := range w.Tiles {
-		termbox.SetCell(tile.X, tile.Y, tile.img, termbox.ColorDefault, termbox.ColorDefault)
+		termbox.SetCell(tile.X, tile.Y, tile.img, tile.fg, tile.bg)
 	}
 
 	termbox.SetCell(p.X, p.Y, p.img, termbox.ColorRed, termbox.ColorBlack)
