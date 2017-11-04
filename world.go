@@ -31,7 +31,7 @@ func NewWorld(width int, height int) *World {
 
 	// populate walls
 	for y := 0; y < height; y++ {
-		w.Tiles = append(w.Tiles, Tile{0, y, 37, false})         // '%'
+		w.Tiles = append(w.Tiles, Tile{0, y, 37, false})         // 37 -> '%'
 		w.Tiles = append(w.Tiles, Tile{width - 1, y, 37, false}) // '%'
 	}
 
