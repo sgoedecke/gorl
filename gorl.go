@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/nsf/termbox-go"
-  "strconv"
+	"strconv"
 )
 
 func main() {
@@ -25,7 +25,7 @@ func main() {
 	// initialize the world and do initial draw
 	w := NewWorld(80, 40)
 	p := Player{2, 2, 64, w} // 64 -> '@'
-  l := Log{}
+	l := Log{}
 
 	draw(w, p, &l)
 	// set up key handlers
@@ -55,15 +55,15 @@ func main() {
 func draw(w *World, p Player, l *Log) {
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
 
-  // draw all tiles
+	// draw all tiles
 	for _, tile := range w.Tiles {
 		termbox.SetCell(tile.X, tile.Y, tile.img, tile.fg, tile.bg)
 	}
-  // draw player
+	// draw player
 	termbox.SetCell(p.X, p.Y, p.img, termbox.ColorRed, termbox.ColorBlack)
 
-  l.AddMessage("Hello world" + strconv.Itoa(len(l.Messages)), termbox.ColorCyan)
+	l.AddMessage("Hello world"+strconv.Itoa(len(l.Messages)), termbox.ColorCyan)
 
-  l.Draw()
+	l.Draw()
 	_ = termbox.Flush()
 }
