@@ -19,6 +19,7 @@ type Message struct {
 
 func NewMessage(s string, color termbox.Attribute) *Message {
   var m Message
+  m.Color = color
 
   if (len(s) <= 40) {
     m.Text = append(m.Text, s)
