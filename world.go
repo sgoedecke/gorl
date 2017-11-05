@@ -15,17 +15,31 @@ type Tile struct {
 	passable bool
 }
 
+func (t *Tile) HandleCollision(e *Entity, l *Log) {
+	l.AddMessage("You can't go there", termbox.ColorWhite)
+}
+
 // World type: has tiles. Can create itself with tiles as walls. Can check if there's an impassable tile at
 // some coordinates
 
 type World struct {
-	Tiles  []Tile
-	Player *Entity
+	Tiles    []Tile
+	Player   *Entity
+	Entities []*Entity
+	Log      *Log
 }
 
-func (w *World) IsTileOccupied(x int, y int) bool {
+func (w *World) IsTileOccupied(e *Entity, x int, y int) bool {
 	for _, tile := range w.Tiles {
 		if tile.X == x && tile.Y == y && !tile.passable {
+			tile.HandleCollision(e, w.Log)
+			return true
+		}
+	}
+
+	for _, entity := range w.Entities {
+		if entity.X == x && entity.Y == y {
+			entity.HandleCollision(e, w.Log)
 			return true
 		}
 	}
@@ -37,9 +51,11 @@ func (w *World) Draw(x int, y int) {
 	for _, tile := range w.Tiles {
 		termbox.SetCell(tile.X+x, tile.Y+y, tile.img, tile.fg, tile.bg)
 	}
-	// draw player
-	p := w.Player
-	termbox.SetCell(p.X+x, p.Y+y, p.img, termbox.ColorRed, termbox.ColorBlack)
+	// draw entities
+	for _, entity := range w.Entities {
+		termbox.SetCell(entity.X+x, entity.Y+y, entity.img, entity.Color, termbox.ColorBlack)
+	}
+
 }
 
 func NewWorld(width int, height int) *World {

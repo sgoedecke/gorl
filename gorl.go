@@ -22,12 +22,19 @@ func main() {
 	}()
 
 	// initialize the world, player and do initial draw
-	w := NewWorld(80, 40)         // width 80, height 40
-	p := Entity{2, 2, 64, 100, w} // 64 -> '@'
+	w := NewWorld(80, 40)                               // width 80, height 40
+	p := Entity{40, 20, 64, 100, termbox.ColorWhite, w} // 64 -> '@'
 	w.Player = &p
+	w.Entities = append(w.Entities, &p)
 	l := Log{}
+	w.Log = &l
 	hp := HealthBar{&p}
 
+	// initialize another Entity
+	e := Entity{10, 10, 64, 100, termbox.ColorCyan, w}
+	w.Entities = append(w.Entities, &e)
+
+	// add welcome messages
 	l.AddMessage("Welcome to Gorl!", termbox.ColorGreen)
 	l.AddMessage("But be careful...", termbox.ColorRed)
 
