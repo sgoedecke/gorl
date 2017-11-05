@@ -20,7 +20,7 @@ type Tile struct {
 
 type World struct {
 	Tiles  []Tile
-	Player *Player
+	Player *Entity
 }
 
 func (w *World) IsTileOccupied(x int, y int) bool {
@@ -32,14 +32,14 @@ func (w *World) IsTileOccupied(x int, y int) bool {
 	return false
 }
 
-func (w *World) Draw() {
+func (w *World) Draw(x int, y int) {
 	// draw all tiles
 	for _, tile := range w.Tiles {
-		termbox.SetCell(tile.X, tile.Y, tile.img, tile.fg, tile.bg)
+		termbox.SetCell(tile.X+x, tile.Y+y, tile.img, tile.fg, tile.bg)
 	}
 	// draw player
 	p := w.Player
-	termbox.SetCell(p.X, p.Y, p.img, termbox.ColorRed, termbox.ColorBlack)
+	termbox.SetCell(p.X+x, p.Y+y, p.img, termbox.ColorRed, termbox.ColorBlack)
 }
 
 func NewWorld(width int, height int) *World {

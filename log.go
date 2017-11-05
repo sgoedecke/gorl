@@ -5,7 +5,6 @@ import (
 )
 
 const LogWidth = 40
-const WorldWidth = 80
 const MaxHeight = 40
 
 // Message type: an individual line in the log. Has a color. Text is stored as an array of strings
@@ -44,9 +43,8 @@ func (m *Message) Height() int {
 	return len(m.Text)
 }
 
-func (m *Message) Draw(y int) {
+func (m *Message) Draw(x int, y int) {
 	for _, str := range m.Text {
-		x := int(WorldWidth + 1)
 		runes := []rune(str)
 		for _, r := range runes {
 			termbox.SetCell(x, y, r, m.Color, termbox.ColorDefault)
@@ -80,10 +78,9 @@ func (l *Log) AddMessage(s string, color termbox.Attribute) {
 	l.Messages = append(l.Messages, *m)
 }
 
-func (l *Log) Draw() {
-	y := 0
+func (l *Log) Draw(x int, y int) {
 	for _, msg := range l.Messages {
-		msg.Draw(y)
+		msg.Draw(x, y)
 		y = y + msg.Height()
 	}
 }

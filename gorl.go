@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/nsf/termbox-go"
-	"strconv"
 )
 
 func main() {
@@ -22,12 +21,15 @@ func main() {
 		}
 	}()
 
-	// initialize the world and do initial draw
+	// initialize the world, player and do initial draw
 	w := NewWorld(80, 40)         // width 80, height 40
-	p := Player{2, 2, 64, 100, w} // 64 -> '@'
+	p := Entity{2, 2, 64, 100, w} // 64 -> '@'
 	w.Player = &p
 	l := Log{}
 	hp := HealthBar{&p}
+
+	l.AddMessage("Welcome to Gorl!", termbox.ColorGreen)
+	l.AddMessage("But be careful...", termbox.ColorRed)
 
 	draw(w, &l, &hp)
 	// set up key handlers
@@ -57,12 +59,8 @@ func main() {
 // takes pointers to a world widget, a log widget, and a health bar widget
 func draw(w *World, l *Log, hp *HealthBar) {
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
-
-	w.Draw()
-
-	l.AddMessage("Hello worllkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhlkjhjhjhjhdQQQ"+strconv.Itoa(len(l.Messages)), termbox.ColorCyan)
-
-	l.Draw()
-	hp.Draw(41, 80) // world height + 1, world width
+	w.Draw(0, 0)   // draw world at 0,0
+	l.Draw(81, 0)  // draw log to right of world
+	hp.Draw(0, 41) // draw hp at the very bottom of the world
 	_ = termbox.Flush()
 }
