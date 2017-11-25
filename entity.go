@@ -17,25 +17,25 @@ type Entity struct {
 }
 
 func (e *Entity) MoveUp() {
-	if e.world.IsTileOccupied(e, e.X, e.Y-1) {
+	if e.world.ActiveScreen.IsTileOccupied(e, e.X, e.Y-1) {
 		return
 	}
 	e.Y--
 }
 func (e *Entity) MoveDown() {
-	if e.world.IsTileOccupied(e, e.X, e.Y+1) {
+	if e.world.ActiveScreen.IsTileOccupied(e, e.X, e.Y+1) {
 		return
 	}
 	e.Y++
 }
 func (e *Entity) MoveLeft() {
-	if e.world.IsTileOccupied(e, e.X-1, e.Y) {
+	if e.world.ActiveScreen.IsTileOccupied(e, e.X-1, e.Y) {
 		return
 	}
 	e.X--
 }
 func (e *Entity) MoveRight() {
-	if e.world.IsTileOccupied(e, e.X+1, e.Y) {
+	if e.world.ActiveScreen.IsTileOccupied(e, e.X+1, e.Y) {
 		return
 	}
 	e.X++

@@ -25,14 +25,15 @@ func main() {
 	w := NewWorld(80, 40)                               // width 80, height 40
 	p := Entity{40, 20, 64, 100, termbox.ColorWhite, w} // 64 -> '@'
 	w.Player = &p
-	w.Entities = append(w.Entities, &p)
+	s := w.ActiveScreen
+	s.Entities = append(s.Entities, &p)
 	l := Log{}
 	w.Log = &l
 	hp := HealthBar{&p}
 
 	// initialize another Entity
 	e := Entity{10, 10, 64, 100, termbox.ColorCyan, w}
-	w.Entities = append(w.Entities, &e)
+	s.Entities = append(s.Entities, &e)
 
 	// add welcome messages
 	l.AddMessage("Welcome to Gorl!", termbox.ColorGreen)
