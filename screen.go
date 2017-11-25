@@ -24,8 +24,24 @@ func (t *Tile) HandleCollision(e *Entity, l *Log) {
 
 type Screen struct {
 	Tiles    []Tile
-	Entities []*Entity
+	Entities []DynamicEntity
 	World *World
+}
+
+func (entity Entity) CheckCollision(target *Entity, x int, y int) bool {
+	if entity.X == x && entity.Y == y {
+		entity.HandleCollision(target, entity.screen.World.Log)
+		return true
+	}
+	return false
+}
+
+func (portal Portal) CheckCollision(target *Entity, x int, y int) bool {
+	if portal.X == x && portal.Y == y {
+		portal.HandleCollision(target, portal.screen.World.Log)
+		return true
+	}
+	return false
 }
 
 func (s *Screen) IsTileOccupied(e *Entity, x int, y int) bool {
@@ -37,8 +53,7 @@ func (s *Screen) IsTileOccupied(e *Entity, x int, y int) bool {
 	}
 
 	for _, entity := range s.Entities {
-		if entity.X == x && entity.Y == y {
-			entity.HandleCollision(e, s.World.Log)
+		if entity.CheckCollision(e, x, y) {
 			return true
 		}
 	}
@@ -52,9 +67,17 @@ func (s *Screen) Draw(x int, y int) {
 	}
 	// draw entities
 	for _, entity := range s.Entities {
-		termbox.SetCell(entity.X+x, entity.Y+y, entity.img, entity.Color, termbox.ColorBlack)
+		entity.Draw(x, y)
 	}
 
+  // draw player
+	player := s.World.Player
+	termbox.SetCell(player.X+x, player.Y+y, player.img, player.Color, termbox.ColorBlack)
+
+}
+
+func (entity Entity) Draw(x int, y int) {
+	termbox.SetCell(entity.X+x, entity.Y+y, entity.img, entity.Color, termbox.ColorBlack)
 }
 
 func NewScreen(width int, height int, w *World) *Screen {

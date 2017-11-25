@@ -23,17 +23,21 @@ func main() {
 
 	// initialize the world, player and do initial draw
 	w := NewWorld(80, 40)                               // width 80, height 40
-	p := Entity{40, 20, 64, 100, termbox.ColorWhite, w} // 64 -> '@'
-	w.Player = &p
 	s := w.ActiveScreen
-	s.Entities = append(s.Entities, &p)
+	p := Entity{40, 20, 64, 100, termbox.ColorWhite, s} // 64 -> '@'
+	w.Player = &p
+	s.Entities = append(s.Entities, p)
 	l := Log{}
 	w.Log = &l
 	hp := HealthBar{&p}
 
+	destS := NewScreen(80,40,w)
+	portal := Portal{Entity{20,20,64,100,termbox.ColorRed,s},destS,3,3}
+	s.Entities = append(s.Entities, portal)
+
 	// initialize another Entity
-	e := Entity{10, 10, 64, 100, termbox.ColorCyan, w}
-	s.Entities = append(s.Entities, &e)
+	e := Entity{10, 10, 64, 100, termbox.ColorCyan, s}
+	s.Entities = append(s.Entities, e)
 
 	// add welcome messages
 	l.AddMessage("Welcome to Gorl!", termbox.ColorGreen)
