@@ -29,6 +29,12 @@ type Screen struct {
 	World    *World
 }
 
+func (s *Screen) Act() {
+	for i, _ := range s.Entities {
+		s.Entities[i].Act()
+	}
+}
+
 func (s *Screen) IsTileOccupied(e *Entity, x int, y int) bool {
 	for _, tile := range s.Tiles {
 		if tile.X == x && tile.Y == y && !tile.passable {

@@ -18,3 +18,7 @@ func NewWorld(width int, height int) *World {
 func (w *World) Draw(x int, y int) {
 	w.ActiveScreen.Draw(x, y)
 }
+
+func (w *World) Act() {
+	w.ActiveScreen.Act()
+}
