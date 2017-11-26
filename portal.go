@@ -15,19 +15,19 @@ type Portal struct {
 	destY       int
 }
 
-func (p *Portal) HandleCollision(e *Entity, l *Log) {
-	l.AddMessage("You passed into a new area", termbox.ColorWhite)
+func (self *Portal) HandleCollision(e *Entity) {
+	self.Log().AddMessage("You passed into a new area", termbox.ColorWhite)
 	player := e
 	w := player.screen.World
-	w.ActiveScreen = p.Destination
+	w.ActiveScreen = self.Destination
 	player.screen = w.ActiveScreen
-	player.X = p.destX
-	player.Y = p.destY
+	player.X = self.destX
+	player.Y = self.destY
 }
 
 func (portal *Portal) CheckCollision(target *Entity, x int, y int) bool {
 	if portal.X == x && portal.Y == y {
-		portal.HandleCollision(target, portal.screen.World.Log)
+		portal.HandleCollision(target)
 		return true
 	}
 	return false

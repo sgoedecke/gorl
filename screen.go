@@ -35,6 +35,7 @@ func (s *Screen) Act() {
 	}
 }
 
+// check for impassable tiles, other entities, and the player.
 func (s *Screen) IsTileOccupied(e *Entity, x int, y int) bool {
 	for _, tile := range s.Tiles {
 		if tile.X == x && tile.Y == y && !tile.passable {
@@ -48,6 +49,11 @@ func (s *Screen) IsTileOccupied(e *Entity, x int, y int) bool {
 			return true
 		}
 	}
+
+	if s.World.Player.CheckCollision(e, x, y) {
+		return true
+	}
+
 	return false
 }
 

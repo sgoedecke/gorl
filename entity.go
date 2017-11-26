@@ -9,7 +9,7 @@ import (
 
 type DynamicEntity interface {
 	CheckCollision(e *Entity, x int, y int) bool // returns true if it's about to collide with e
-	HandleCollision(e *Entity, l *Log)           // takes an action on collision with e
+	HandleCollision(e *Entity)                   // takes an action on collision with e
 	Draw(x int, y int)                           // draws self to the termbox buffer
 	Act()                                        // does something per tick
 }
@@ -56,14 +56,14 @@ func (self Entity) Log() *Log {
 	return self.screen.World.Log
 }
 
-func (self *Entity) HandleCollision(e *Entity, l *Log) {
-	l.AddMessage("You bumped into somebody", e.Color)
-	l.AddMessage("Hey, don't bump into me!", self.Color)
+func (self *Entity) HandleCollision(e *Entity) {
+	self.Log().AddMessage("You bumped into somebody", e.Color)
+	self.Log().AddMessage("Hey, don't bump into me!", self.Color)
 }
 
 func (self *Entity) CheckCollision(target *Entity, x int, y int) bool {
 	if self.X == x && self.Y == y {
-		self.HandleCollision(target, self.screen.World.Log)
+		self.HandleCollision(target)
 		return true
 	}
 	return false
