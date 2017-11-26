@@ -4,8 +4,18 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
+// DynamicEntity type: Screens and worlds have these. They must be able to handle collision,
+// check for collision, and know how to draw themselves
+
+type DynamicEntity interface {
+	HandleCollision(e *Entity, l *Log)
+	Draw(x int, y int)
+	CheckCollision(e *Entity, x int, y int) bool
+}
+
 // Entity type: has coords, a rune, and knows what world it's in. Can move around.
-// Drawing is handled by the World.
+// Implements DynamicEntity. Other entity structs should mix in `Entity` and re-implement
+// interface methods if they need to be overridden.
 
 type Entity struct {
 	X      int
@@ -13,13 +23,7 @@ type Entity struct {
 	img    rune
 	Health int
 	Color  termbox.Attribute
-	screen  *Screen
-}
-
-type DynamicEntity interface {
-	HandleCollision(e *Entity, l *Log)
-	Draw(x int, y int)
-	CheckCollision(e *Entity, x int, y int) bool
+	screen *Screen
 }
 
 func (e *Entity) MoveUp() {
@@ -49,38 +53,17 @@ func (e *Entity) MoveRight() {
 
 func (target Entity) HandleCollision(e *Entity, l *Log) {
 	l.AddMessage("You bumped into somebody", e.Color)
-
 	l.AddMessage("Hey, don't bump into me!", target.Color)
 }
 
-// HealthBar type: has a Entity, knows how to draw itself
-
-type HealthBar struct {
-	Entity *Entity
-}
-
-func (h *HealthBar) Draw(x int, y int) {
-	width := 80 // world width
-	w := float32(h.Entity.Health) * (float32(width) / 100.0)
-	for xIndex := x; xIndex < int(w)+x; xIndex++ {
-		termbox.SetCell(xIndex, y, 35, termbox.ColorRed, termbox.ColorBlack)
+func (entity Entity) CheckCollision(target *Entity, x int, y int) bool {
+	if entity.X == x && entity.Y == y {
+		entity.HandleCollision(target, entity.screen.World.Log)
+		return true
 	}
+	return false
 }
 
-// Portal type: colliding with it teleports the player to a new screen
-
-type Portal struct {
-	Entity
-	Destination *Screen
-	destX int
-	destY int
-}
-
-func (p Portal) HandleCollision(e *Entity, l *Log) {
-	l.AddMessage("You passed into a new area", termbox.ColorWhite)
-	player := e
-	w := player.screen.World
-	w.ActiveScreen = p.Destination
-	player.X = p.destX
-	player.Y = p.destY
+func (entity Entity) Draw(x int, y int) {
+	termbox.SetCell(entity.X+x, entity.Y+y, entity.img, entity.Color, termbox.ColorBlack)
 }
