@@ -24,7 +24,7 @@ func main() {
 	// initialize the world, player and do initial draw
 	w := NewWorld(80, 40) // width 80, height 40
 	s := w.ActiveScreen
-	p := Entity{40, 20, 64, 100, termbox.ColorWhite, s} // 64 -> '@'
+	p := Player{Entity{40, 20, 64, 100, termbox.ColorWhite, s}} // 64 -> '@'
 	w.Player = &p
 
 	l := Log{}
@@ -32,7 +32,7 @@ func main() {
 	hp := HealthBar{&p}
 
 	// initialize another Entity
-	e := Friend{Entity{10, 10, 64, 100, termbox.ColorCyan, s}}
+	e := Enemy{Entity{10, 10, 64, 100, termbox.ColorCyan, s}}
 	s.Entities = append(s.Entities, &e)
 
 	// initialize portal and new screen

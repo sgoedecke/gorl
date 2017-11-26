@@ -15,17 +15,16 @@ type Portal struct {
 	destY       int
 }
 
-func (self *Portal) HandleCollision(e *Entity) {
+func (self *Portal) HandleCollision(e DynamicEntity) {
 	self.Log().AddMessage("You passed into a new area", termbox.ColorWhite)
-	player := e
-	w := player.screen.World
+	w := self.screen.World
 	w.ActiveScreen = self.Destination
-	player.screen = w.ActiveScreen
-	player.X = self.destX
-	player.Y = self.destY
+	w.Player.screen = w.ActiveScreen
+	w.Player.X = self.destX
+	w.Player.Y = self.destY
 }
 
-func (portal *Portal) CheckCollision(target *Entity, x int, y int) bool {
+func (portal *Portal) CheckCollision(target DynamicEntity, x int, y int) bool {
 	if portal.X == x && portal.Y == y {
 		portal.HandleCollision(target)
 		return true

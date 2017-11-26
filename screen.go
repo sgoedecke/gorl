@@ -16,8 +16,8 @@ type Tile struct {
 	passable bool
 }
 
-func (t *Tile) HandleCollision(e *Entity, l *Log) {
-	l.AddMessage("You can't go there", termbox.ColorWhite)
+func (self *Tile) HandleCollision(e *Entity) {
+	e.Log().AddMessage("You can't go there", termbox.ColorWhite)
 }
 
 // Screen type: has tiles. Can create itself with tiles as walls. Can check if there's an impassable tile at
@@ -36,10 +36,11 @@ func (s *Screen) Act() {
 }
 
 // check for impassable tiles, other entities, and the player.
+// e is the entity trying to move into the tile (x,y)
 func (s *Screen) IsTileOccupied(e *Entity, x int, y int) bool {
 	for _, tile := range s.Tiles {
 		if tile.X == x && tile.Y == y && !tile.passable {
-			tile.HandleCollision(e, s.World.Log)
+			tile.HandleCollision(e)
 			return true
 		}
 	}

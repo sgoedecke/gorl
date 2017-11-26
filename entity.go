@@ -8,8 +8,8 @@ import (
 // check for collision, and know how to draw themselves
 
 type DynamicEntity interface {
-	CheckCollision(e *Entity, x int, y int) bool // returns true if it's about to collide with e
-	HandleCollision(e *Entity)                   // takes an action on collision with e
+	CheckCollision(e DynamicEntity, x int, y int) bool // returns true if it's about to collide with e
+	HandleCollision(e DynamicEntity)                   // takes an action on collision with e
 	Draw(x int, y int)                           // draws self to the termbox buffer
 	Act()                                        // does something per tick
 }
@@ -56,14 +56,14 @@ func (self Entity) Log() *Log {
 	return self.screen.World.Log
 }
 
-func (self *Entity) HandleCollision(e *Entity) {
-	self.Log().AddMessage("You bumped into somebody", e.Color)
-	self.Log().AddMessage("Hey, don't bump into me!", self.Color)
+// self has run into e
+func (self *Entity) HandleCollision(e DynamicEntity) {
 }
 
-func (self *Entity) CheckCollision(target *Entity, x int, y int) bool {
+// target is trying to move into self
+func (self *Entity) CheckCollision(target DynamicEntity, x int, y int) bool {
 	if self.X == x && self.Y == y {
-		self.HandleCollision(target)
+		target.HandleCollision(self)
 		return true
 	}
 	return false

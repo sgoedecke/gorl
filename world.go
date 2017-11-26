@@ -2,7 +2,7 @@ package main
 
 type World struct {
 	ActiveScreen *Screen
-	Player       *Entity
+	Player       *Player
 	Log          *Log
 }
 
