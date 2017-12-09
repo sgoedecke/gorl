@@ -24,10 +24,5 @@ func (self *Portal) HandleCollision(e DynamicEntity) {
 	w.Player.Y = self.destY
 }
 
-func (portal *Portal) CheckCollision(target DynamicEntity, x int, y int) bool {
-	if portal.X == x && portal.Y == y {
-		portal.HandleCollision(target)
-		return true
-	}
-	return false
+func (self *Portal) CollideWith(e DynamicEntity) {
 }

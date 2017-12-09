@@ -16,10 +16,6 @@ type Tile struct {
 	passable bool
 }
 
-func (self *Tile) HandleCollision(e *Entity) {
-	e.Log().AddMessage("You can't go there", termbox.ColorWhite)
-}
-
 // Screen type: has tiles. Can create itself with tiles as walls. Can check if there's an impassable tile at
 // some coordinates
 
@@ -37,21 +33,31 @@ func (s *Screen) Act() {
 
 // check for impassable tiles, other entities, and the player.
 // e is the entity trying to move into the tile (x,y)
-func (s *Screen) IsTileOccupied(e *Entity, x int, y int) bool {
+func (s *Screen) IsTileOccupied(e DynamicEntity, x int, y int) bool {
 	for _, tile := range s.Tiles {
 		if tile.X == x && tile.Y == y && !tile.passable {
-			tile.HandleCollision(e)
 			return true
 		}
 	}
 
-	for _, entity := range s.Entities {
-		if entity.CheckCollision(e, x, y) {
+	// handle colliding with non-player entities (e might still be player)
+	for i, _ := range s.Entities {
+		entity := s.Entities[i] // get actual entity
+		if entity.GetX() == x && entity.GetY() == y {
+			player, ok := e.(Player) // if e is a player, trigger collision events
+			if ok {
+				player.CollideWith(entity)
+				entity.HandleCollision(player)
+			}
 			return true
 		}
 	}
 
-	if s.World.Player.CheckCollision(e, x, y) {
+	// handle collisions with the player (e isn't player)
+	player := s.World.Player
+	if player.X == x && player.Y == y {
+		e.CollideWith(player)
+		player.HandleCollision(e)
 		return true
 	}
 

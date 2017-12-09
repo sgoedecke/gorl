@@ -8,10 +8,13 @@ import (
 // check for collision, and know how to draw themselves
 
 type DynamicEntity interface {
-	CheckCollision(e DynamicEntity, x int, y int) bool // returns true if it's about to collide with e
-	HandleCollision(e DynamicEntity)                   // takes an action on collision with e
+	CollideWith(e DynamicEntity)                   // takes an action when running into e
+	HandleCollision(e DynamicEntity)                   // takes an action when run into by e
 	Draw(x int, y int)                           // draws self to the termbox buffer
 	Act()                                        // does something per tick
+	GetX() int
+	GetY() int
+	Log() *Log
 }
 
 // Entity type: has coords, a rune, and knows what world it's in. Can move around.
@@ -25,6 +28,14 @@ type Entity struct {
 	Health int
 	Color  termbox.Attribute
 	screen *Screen
+}
+
+func (e Entity) GetX() int {
+	return e.X
+}
+
+func (e Entity) GetY() int {
+	return e.Y
 }
 
 func (e *Entity) MoveUp() {
@@ -57,19 +68,16 @@ func (self Entity) Log() *Log {
 }
 
 // self has run into e
+func (self *Entity) CollideWith(e DynamicEntity) {
+	self.Log().AddMessage("!!!!!", self.Color)
+}
+
+// e has run into self
 func (self *Entity) HandleCollision(e DynamicEntity) {
+	self.Log().AddMessage("!!!!", self.Color)
 }
 
-// target is trying to move into self
-func (self *Entity) CheckCollision(target DynamicEntity, x int, y int) bool {
-	if self.X == x && self.Y == y {
-		target.HandleCollision(self)
-		return true
-	}
-	return false
-}
-
-func (self *Entity) Draw(x int, y int) {
+func (self Entity) Draw(x int, y int) {
 	termbox.SetCell(self.X+x, self.Y+y, self.img, self.Color, termbox.ColorBlack)
 }
 

@@ -13,8 +13,11 @@ type Enemy struct {
 	Entity
 }
 
-
 func (self *Enemy) HandleCollision(e DynamicEntity) {
+	self.Log().AddMessage("Oh no!", self.Color)
+}
+
+func (self *Enemy) CollideWith(e DynamicEntity) {
 	self.Log().AddMessage("Have at you!", self.Color)
 }
 

@@ -9,9 +9,15 @@ type Player struct {
 }
 
 // e is trying to move into the player!
-func (self *Player) HandleCollision(e *Entity) {
+func (self Player) HandleCollision(e DynamicEntity) {
+	self.Log().AddMessage("Something hit you!", self.Color)
+}
+
+// e is trying to move into the player!
+func (self Player) CollideWith(e DynamicEntity) {
 	self.Log().AddMessage("You bumped into something!", self.Color)
 }
 
-func (self *Player) Act() {
+
+func (self Player) Act() {
 }
